@@ -5,7 +5,7 @@ import sys
 import termios
 import fcntl
 import rospy
-from std_msgs.msg import String
+from bsv_msg.msg import MoveAngle
 
 def getch():
     fd = sys.stdin.fileno()
@@ -31,29 +31,36 @@ def getch():
     return c
 
 def effectors_tester():
-    pub = rospy.Publisher('bsv/system_to_effector_cmd', String, queue_size=1)
+    pub = rospy.Publisher('bsv/system_to_effector_cmd', MoveAngle, queue_size=1)
     rospy.init_node('effectors_test', anonymous=True)
 
     while not rospy.is_shutdown():
 
         char = getch()
         char = ord(char)
+
+        msg = MoveAngle()
+        msg.type = 'relative'
+        msg.angle_hor = 0
+        msg.angle_ver = 0
             
         if char == 119:  # w
-            pub.publish('0;10')
+            msg.angle_ver = 10
             print 'up'
 
         elif char == 115:  # s
-            pub.publish('0;-10')
+            msg.angle_ver = -10
             print 'down'
 
         elif char == 97:  # a
-            pub.publish('-10;0')
+            msg.angle_hor = -10
             print 'left'
 
         elif char == 100:  # d
-            pub.publish('10;0')
+            msg.angle_hor = 10
             print 'right'
+
+        pub.publish(msg)
 
 #MAIN
 if __name__ == '__main__':

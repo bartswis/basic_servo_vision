@@ -1,7 +1,9 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(bsv_effectors)
 
-find_package(catkin REQUIRED)
+find_package(catkin REQUIRED
+  rospy
+  bsv_msg)
 
 catkin_package(CATKIN_DEPENDS xacro)
 

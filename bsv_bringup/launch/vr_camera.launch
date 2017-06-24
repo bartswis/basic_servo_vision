@@ -1,0 +1,14 @@
+<launch>
+  <arg name="camera" default="icube" />
+
+  <group ns="bsv_camera_$(arg camera)">
+    <node pkg="bsv_receptors" type="vr_camera" name="vr_camera_$(arg camera)">
+      <rosparam>
+        subscriber: /icube/image_raw
+        publisher: camera_icube_object_position
+        view: true
+      </rosparam>
+    </node>
+  </group>
+
+</launch>

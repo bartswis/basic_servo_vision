@@ -4,6 +4,13 @@
   <arg name="color_mode" default="rgb24"/>
   <arg name="trigger_mode" default="streaming" />
   <arg name="frame_id" default="$(arg camera)_optical_frame" />
+  <arg name="calibrated" default="0" />
+  <arg name="serial" default="1031N71817" />
+  <arg name="frame_rate" default="60.0" />
+  <arg name="auto_gain" default="False" />
+  <arg name="gain" default="1" />
+  <arg name="auto_shutter" default="False" />
+  <arg name="shutter_speed" default="0.01" />
 
   <group ns="$(arg camera)">
     <node name="$(arg camera)_driver" pkg="netusb_camera_driver" type="netusb_node" output="screen">
@@ -12,6 +19,14 @@
       <param name="camera_id" value="$(arg camera_id)" />
       <param name="trigger_mode" value="$(arg trigger_mode)" />
       <param name="frame_id" value="$(arg frame_id)" />
+      <param name="serial" value="$(arg serial)" />
+      <param name="camera_$(arg camera)_info_url" if="$(arg calibrated)"
+             value="file://$(env HOME)/.ros/camera_$(arg camera)_info/$(arg serial).yaml" />
+      <param name="frame_rate" value="$(arg serial)" />
+      <param name="auto_gain" value="$(arg serial)" />
+      <param name="gain" value="$(arg serial)" />
+      <param name="auto_shutter" value="$(arg serial)" />
+      <param name="shutter_speed" value="$(arg serial)" />
     </node>
   </group>
 </launch>

@@ -6,7 +6,6 @@
 #include <cmath>
 #include <queue>
 #include <vector>
-#include <bsv_msg/TimeSeq.h>
 
 static const char WINDOW_WORK[] = "Work";
 static const char WINDOW_ORG[] = "Orginal";
@@ -38,31 +37,7 @@ void imageCallback(const sensor_msgs::ImageConstPtr& in_msg, const sensor_msgs::
         cv::Mat erodeImage;
         cv::Mat dilateImage;
 
-        if (undistort)
-        {
-            cv::Mat camera_matrix = cv::Mat::zeros(3,3, CV_64FC1);
-            camera_matrix.ptr<double>(0)[0] = fx;
-            camera_matrix.ptr<double>(1)[1] = fy;
-            camera_matrix.ptr<double>(0)[2] = cx;
-            camera_matrix.ptr<double>(1)[2] = cy;
-            camera_matrix.ptr<double>(2)[2] = 1;
-
-            std::vector<double> camera_distortion = info->D;;
-
-            cv::Mat undistImage;
-            cv::Mat new_camera_matrix = camera_matrix.clone();
-            cv::undistort(sourceImage, undistImage, camera_matrix, cv::Mat(camera_distortion), new_camera_matrix);
-            cv_ptr->image = undistImage;
-            fx = new_camera_matrix.ptr<double>(0)[0];
-            fy = new_camera_matrix.ptr<double>(1)[1];
-            cx = new_camera_matrix.ptr<double>(0)[2];
-            cy = new_camera_matrix.ptr<double>(1)[2];
-            cv::cvtColor(undistImage, grayImage, cv::COLOR_BGR2GRAY);
-        }
-        else
-        {
-            cv::cvtColor(sourceImage, grayImage, cv::COLOR_BGR2GRAY);
-        }
+        cv::cvtColor(sourceImage, grayImage, cv::COLOR_BGR2GRAY);
 
         cv::threshold(grayImage, thresholdImage, 60, 255, cv::THRESH_BINARY);
         cv::erode(thresholdImage, erodeImage, cv::Mat(), cv::Point(-1, -1), 6, cv::BORDER_DEFAULT, 1);
@@ -95,10 +70,10 @@ void imageCallback(const sensor_msgs::ImageConstPtr& in_msg, const sensor_msgs::
             double M02 = mom.m02 - (mom.m01 * mom.m01) / mom.m00;
             double M20 = mom.m20 - (mom.m10 * mom.m10) / mom.m00;
 
-                // for circle it should be ~0.0063
+            // for circle it should be ~0.0063
             double M7 = (M20 * M02 - M11 * M11) / (mom.m00 * mom.m00 * mom.m00 * mom.m00);
 
-                // circle
+            // circle
             if (M7 < 0.0064 && M7 > 0.0062)
             {
                 double r = sqrt(area/(float)CV_PI);
@@ -124,7 +99,6 @@ void imageCallback(const sensor_msgs::ImageConstPtr& in_msg, const sensor_msgs::
                         pose_out.pose.orientation.w = 1;
 
                     }
-                    //ROS_INFO("circle, M7 = %f , pix_area = %f, pix_x = %f, pix_y = %f, h = %f, dx = %f, dy = %f", M7, area, center.x, center.y, h, dx, dy);
                     ++count;
 
                     if (view)
@@ -139,10 +113,6 @@ void imageCallback(const sensor_msgs::ImageConstPtr& in_msg, const sensor_msgs::
         pose_out.header.frame_id = "32167";
         pose_out.header.stamp = ros::Time::now();
         pub_object.publish(pose_out);
-        bsv_msg::TimeSeq time_seq;
-        time_seq.stamp = pose_out.header.stamp;
-        time_seq.own_seq = in_msg->header.seq;
-        pub_delay.publish(time_seq);
 
         if (view)
         {
@@ -164,7 +134,6 @@ int main(int argc, char **argv)
     ros::NodeHandle nh("~");
 
     nh.getParam("view", view);
-    nh.getParam("undistort", undistort);
 
     if (view)
     {
@@ -178,10 +147,6 @@ int main(int argc, char **argv)
     nh.getParam("subscriber", subscriber);
     image_transport::ImageTransport it(nh);
     image_transport::CameraSubscriber sub = it.subscribeCamera(subscriber, 1, imageCallback);
-
-    std::string delay;
-    nh.getParam("delay", delay);
-    pub_delay = nh.advertise<bsv_msg::TimeSeq>(delay, 1);
     
     std::string publisher;
     nh.getParam("publisher", publisher);

@@ -31,7 +31,7 @@ def getch():
     return c
 
 def effectors_tester():
-    pub = rospy.Publisher('bsv/system_to_effector_cmd', MoveAngle, queue_size=1)
+    pub = rospy.Publisher('bsv_effectors/system_to_effector_cmd', MoveAngle, queue_size=1)
     rospy.init_node('effectors_test', anonymous=True)
 
     while not rospy.is_shutdown():

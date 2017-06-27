@@ -102,7 +102,7 @@ if __name__ == '__main__':
         sys.exit(0)
 
     rospy.init_node('effectors', anonymous=True)
-    rospy.Subscriber("/bsv/system_to_effector_cmd", MoveAngle, move, queue_size=1)
-rospy.spin() 
+    rospy.Subscriber("/bsv_effectors/system_to_effector_cmd", MoveAngle, move, queue_size=1)
+    rospy.spin() 
         
 

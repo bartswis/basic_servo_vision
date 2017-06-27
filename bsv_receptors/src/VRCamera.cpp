@@ -24,11 +24,13 @@ void imageCallback(const sensor_msgs::ImageConstPtr& in_msg, const sensor_msgs::
     {   
         geometry_msgs::PoseStamped pose_out;
 
+	/*
         fx = info->K[0];
         fy = info->K[4];
         cx = info->K[2];
         cy = info->K[5];
-        
+        */
+
         cv_bridge::CvImagePtr cv_ptr = cv_bridge::toCvCopy(in_msg, "bgr8"  );
         cv::Mat sourceImage = cv_ptr->image.clone();
         
@@ -142,6 +144,11 @@ int main(int argc, char **argv)
         cv::namedWindow(WINDOW_OUT);
         cv::startWindowThread();
     }
+
+    nh.getParam("fx", fx);
+    nh.getParam("fy", fy);
+    nh.getParam("cx", cx);
+    nh.getParam("cy", cy);
 
     std::string subscriber;
     nh.getParam("subscriber", subscriber);

@@ -7,6 +7,10 @@
         subscriber: /icube/image_raw
         publisher: camera_icube_object_position
         view: true
+        fx: 1331.971647
+        fy: 1334.068418
+        cx: 606.723712
+        cy: 420.772425
       </rosparam>
     </node>
   </group>

@@ -38,7 +38,17 @@ void imageCallback(const sensor_msgs::ImageConstPtr& in_msg, const sensor_msgs::
         cv::Mat thresholdImage;
         cv::Mat erodeImage;
         cv::Mat dilateImage;
-
+/*
+    cv::Mat img_hsv;
+    // change color space to HSV
+    cv::cvtColor(img, img_hsv, CV_BGR2HSV);
+    std::vector<cv::Mat> planes;
+    cv::split(img_hsv, planes);
+    cv::Mat h_img = planes[0];
+    cv::Mat s_img = planes[1];
+    cv::Mat v_img = planes[2];
+    cv::Mat p_img = cv::Mat::ones(sy, sx, CV_8UC1)*255;
+*/
         cv::cvtColor(sourceImage, grayImage, cv::COLOR_BGR2GRAY);
 
         cv::threshold(grayImage, thresholdImage, 60, 255, cv::THRESH_BINARY);
